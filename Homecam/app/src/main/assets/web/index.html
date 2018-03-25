@@ -1,0 +1,173 @@
+﻿<html>
+<head>
+
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, user-scalable=no">
+	<link rel="stylesheet" href="bootstrap/css/bootstrap.css">
+	<style type="text/css">
+	.btn{
+		margin: 5px;
+
+	}
+	.clear{clear:both;}
+	.preview{margin:5px auto;text-align:center;float:none;}
+	</style>
+</head>
+<body>
+	<!-- Wrap all page content here -->
+	<div id="wrap">
+
+		<!-- Fixed navbar -->
+		<!-- Begin page content -->
+		<div class="container">
+
+			<div class="row">
+
+				<div class="col-md-4 col-sm-12 col-xs-12">
+					<br>
+					<img id="imgCamera" class="img-responsive" src="" style="width:100%;height:70%"/>
+                    <div class="col-xs-6 col-md-3 preview">
+                    <button onclick="StartPreview()" class="Preview btn btn-lg btn-primary" >Preview</button>
+                    </div>
+                    <div class="clear"> </div>
+					<button onclick="changeCamera()" class="btn btn-lg btn-primary">Switch camera</button>
+					<button onclick="toggleFlash()" class="btn btn-lg btn-primary">Toggle Flash</button>
+
+				<input type="text" id="txtClipboard" class="form-control">
+				<br>
+				<button onclick="GetClipboard()" class="btn btn-lg btn-success">sent</button>-->
+				<button onclick="SetClipboard()" class="Preview btn btn-lg btn-primary">Toggle Switch</button>
+                </div>
+            </div>
+
+        </div>
+
+
+    </div>
+
+		</div>
+	</div>
+
+
+	<script src="bootstrap/js/jquery.js"></script>
+	<script src="bootstrap/js/bootstrap.js"></script>
+	<script type="text/javascript">
+
+		var cmd = {
+			sender: "Web Application Client v1",
+			command: {
+				type: "",
+				text:""
+			}
+
+		};
+
+
+
+		function changeCamera(){
+
+		var refreshInterval = 500;
+
+	        var timer = setInterval(function () {
+
+	            $.ajax({
+			    type: "POST",
+			    url: "/api/preview1",
+			    data: JSON.stringify(cmd),
+			    contentType: "application/json; charset=utf-8",
+			    dataType: "json",
+			    success: function (data) {
+			     //alert ("got");
+			     $('#imgCamera').attr('src',data); },
+			    failure: function (errMsg) {
+			        clearInterval(timer);
+			    },
+			    error: function(x,e){
+			    	 clearInterval(timer);
+			    }
+			});
+
+	        }, refreshInterval);
+		}
+
+		function toggleFlash(){
+
+		$.ajax({
+			    type: "POST",
+			    url: "/api/flash",
+			    data: JSON.stringify(cmd),
+			    contentType: "application/json; charset=utf-8",
+			    dataType: "json",
+			    success: function (data) {
+			     alert ("torch ="+data);
+			    },
+			    failure: function (errMsg) {
+			        clearInterval(timer);
+			    },
+			    error: function(x,e){
+			    	 clearInterval(timer);
+			    }
+			});
+
+		}
+
+		function SetClipboard() {
+			cmd.command.type="System.SetClipboard";
+			cmd.command.text = $('#txtClipboard').val(0);
+			$.ajax({
+			    type: "POST",
+			    url: "/api/clipboard",
+			    data: JSON.stringify(cmd),
+			    contentType: "application/json; charset=utf-8",
+			    dataType: "json",
+			    success: function (data) { /* alert(data); */ },
+			    failure: function (errMsg) {
+			        alert(errMsg);
+			    }
+			});
+		}
+
+		function GetClipboard() {
+			cmd.command.type="System.GetClipboard";
+			cmd.command.text = "";
+			$.ajax({
+			    type: "POST",
+			    url: "/api/clipboard",
+			    data: JSON.stringify(cmd),
+			    contentType: "application/json; charset=utf-8",
+			    dataType: "json",
+			    success: function (data) { $('#txtClipboard').val(data); },
+			    failure: function (errMsg) {
+			        alert(errMsg);
+			    }
+			});
+		}
+
+		function StartPreview(){
+
+			 var refreshInterval = 500;
+
+	        var timer = setInterval(function () {
+	            
+	            $.ajax({
+			    type: "POST",
+			    url: "/api/preview",
+			    data: JSON.stringify(cmd),
+			    contentType: "application/json; charset=utf-8",
+			    dataType: "json",
+			    success: function (data) {
+			     //alert ("got");
+			     $('#imgCamera').attr('src',data); },
+			    failure: function (errMsg) {
+			        clearInterval(timer);
+			    },
+			    error: function(x,e){
+			    	 clearInterval(timer);
+			    }
+			});
+
+	        }, refreshInterval);
+		}
+	</script>
+</body>
+</html>

@@ -1,0 +1,5 @@
+<resources>
+    <string name="app_name">HomeCam server</string>
+<string name="switch_control">Switch control</string>
+    <string name="action_settings">Settings</string>
+</resources>
